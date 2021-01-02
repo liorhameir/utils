@@ -1,14 +1,15 @@
 from typing import Callable
+from functools import wraps
 
 
-def custom_profile(func: Callable):
+def custom_profile(func: Callable) -> Callable:
     """
     takes/wraps a Callable and profiles its calls
     :param func: callable
     :return: wrapper
     """
     import cProfile
-
+    @wraps(func)
     def wrapper(*args, **kwargs):
         prof = cProfile.Profile()
         retval = prof.runcall(func, *args, **kwargs)
@@ -17,7 +18,7 @@ def custom_profile(func: Callable):
     return wrapper
 
 
-def logger(func: Callable):
+def logger(func: Callable) -> Callable:
     """
     takes/wraps a Callable and documents its calls by args and kwargs
     :param func: callable
@@ -25,7 +26,7 @@ def logger(func: Callable):
     """
     import logging
     logging.basicConfig(filename=f'{func.__name__}.log', level=logging.INFO)
-
+    @wraps(func)
     def wrapper(*args, **kwargs):
         logging.info(f"args: {args}, kwargs: {kwargs}")
         return func(*args, **kwargs)
